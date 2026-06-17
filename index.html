@@ -515,36 +515,35 @@ window.REPORT_DATA["2026-05"] = {
   period: "MAY 2026",
   home: {
     currentIssues: [
-      { title: "Metadata sync delay", desc: "Batch update queue backed up due to high volume.", severity: "high", owner: "Member 3" },
-      { title: "QC bottleneck", desc: "AI-assisted updates need manual review before release.", severity: "med", owner: "Member 1" },
+      { title: "Chokdar's credentials", desc: "Chokdar Sharif yet to get credentials.", severity: "high", owner: "Chokdar Sharif" },
+      { title: "Creo Performance", desc: "Creo performance in remote PC is not impressive.", severity: "med", owner: "Team" },
     ],
     risks: [
       { title: "N/A", desc: "No active risks identified this period.", severity: "low" },
     ],
     upcoming: [
-      { title: "Client review call", desc: "Walkthrough of May deliverables.", date: "02 Jun 2026" },
-      { title: "Sprint planning", desc: "Define June task allocation.", date: "03 Jun 2026" },
+      { title: "Team reform", desc: "Arpan will be shifted to RFC tasks.", date: "Jun 2026" },
+      { title: "New task start", desc: "Arpan will start on Section revision and creation task.", date: "Jun 2026" },
     ],
     feedback: [
-      { name: "J. Lindholm", role: "Wärtsilä Marine — PM", rating: 4, quote: "Strong month overall. The metadata queue backlog is the one thing to keep an eye on." },
+      { name: "J. Tuomas", role: "Documentation Engineer", rating: 5, quote: "I feel like the tasks are going well. Your lead time is in a good level. Hopefully we can get that Creo license for you so that you can start working with the revision / creation tasks and then also the RFCs. All good. ." },
     ]
   },
   team: {
     workingDays: 16,
     engineers: [
-      { name: "Member 1", capacity: 128, actual: 129 },
-      { name: "Member 2", capacity: 48,  actual: 45  },
-      { name: "Member 3", capacity: 128, actual: 124 },
+      { name: "Arpan", capacity: 128, actual: 120 },
+      { name: "Farhan", capacity: 128,  actual: 112  },
     ]
   },
   project: {
     name: "Etteplan_Wartsila_Marine SPC",
-    plannedEffort: 290, actualEffort: 286, aiContribution: 34,
+    plannedEffort: 248, actualEffort: 232, aiContribution: 5.84%,
     status: "on-schedule",
     plannedDeadline: "31/05/2026", actualDeadline: "25/05/2026",
-    sectionReuseTask: 62, sectionRevisionTask: 70, sectionCreationTask: 48, totalMeetingHours: 16,
+    sectionReuseTask: 29, sectionRevisionTask: 00, sectionCreationTask: 00, totalMeetingHours: 16,
     tasks: [
-      { name: "New Item / Rev Creation", planned: null, actual: 45  },
+      { name: "New Item / Rev Creation", actual: 45  },
       { name: "3D Model Creation / Update", planned: null, actual: 35  },
       { name: "2D Drawing Creation / Update", planned: null, actual: 38  },
       { name: "TC Metadata Update", planned: null, actual: 302 },
@@ -552,18 +551,19 @@ window.REPORT_DATA["2026-05"] = {
       { name: "Quality Assurance", planned: null, actual: 46  },
       { name: "Review, Validation & Release", planned: null, actual: 49  },
     ],
-    highlights: `Team utilised <strong>286 of 290 planned hours</strong>, achieving a <strong>98.62% output</strong>. AI tools significantly bolstered productivity, contributing <strong>34.00%</strong> (97.25 hours) to the total project effort.`,
-    blockers: `High metadata volume requires strict QC of AI-assisted batch updates.`,
+    highlights: `Team utilised <strong>169.5 of 290 planned hours</strong>, achieving a <strong>98.62% output</strong>. AI tools significantly bolstered productivity, contributing <strong>5.84%</strong> to the total project effort.`,
+    blockers: `Revision and Creation tasks need Creo Software.`,
     summary: [
-      "Successfully delivered <strong>515 total tasks</strong>.",
-      "Demonstrated high-quality output with <strong>35 3D model creations</strong>, <strong>38 2D drawing creations</strong>, and <strong>49 review & release</strong> actions.",
-      "Maintained project timeline via effective task reallocation.",
+      "Successfully delivered <strong>29 total tasks</strong>.",
+      "Checked performance of Citrix PC and CAD software.",
+      "Suggested to manage Creo license for further work.",
     ],
     risks: [
       { risk: "N/A", solution: "N/A", action: "N/A" }
     ]
   }
 };
+
 
 // ── MONTH CONFIG — add new months here (newest first) ──────────────────────
 const MONTHS = [
