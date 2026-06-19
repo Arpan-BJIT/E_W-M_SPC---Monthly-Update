@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Generate Monthly Data</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0F172A;color:#0F172A;margin:0;padding:2rem;display:flex;justify-content:center}
+.wrap{background:#fff;max-width:760px;width:100%;border-radius:12px;padding:2rem}
+h1{font-size:20px;margin-bottom:4px}
+.note{font-size:13px;color:#64748B;margin-bottom:1.5rem}
+fieldset{border:1px solid #E2E8F0;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.2rem}
+legend{font-weight:700;font-size:13px;color:#1565C0;padding:0 6px}
+label{display:block;font-size:12px;font-weight:600;color:#334155;margin:.6rem 0 .25rem}
+input,textarea,select{width:100%;padding:7px 9px;border:1px solid #CBD5E1;border-radius:6px;font-size:13px}
+textarea{resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rep-block{border:1px dashed #CBD5E1;border-radius:6px;padding:.6rem;margin-bottom:.5rem;position:relative}
+.rep-block button{position:absolute;top:6px;right:6px;background:#FCEBEB;color:#C62828;border:none;border-radius:4px;font-size:11px;padding:3px 8px;cursor:pointer}
+.add-btn{background:#E3F2FD;color:#1565C0;border:none;border-radius:6px;font-size:12px;padding:6px 12px;cursor:pointer;font-weight:600}
+.submit-btn{background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:12px;width:100%;cursor:pointer;margin-top:1rem}
+#output{margin-top:1.5rem}
+#output textarea{height:320px;font-family:monospace;font-size:12px;background:#0F172A;color:#A7F3D0}
+.copy-btn{background:#2E7D32;color:#fff;border:none;border-radius:6px;font-size:13px;padding:8px 14px;cursor:pointer;margin-top:8px}
+.hint{font-size:12px;color:#64748B;margin-top:.5rem;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Monthly Data Generator (Admin only)</h1>
+  <p class="note">Fill this in, click Generate, then paste the result into <code>index.html</code> per the instructions shown. This page does not save anything — it only builds the code block for you.</p>
+
+  <form id="form">
+    <fieldset>
+      <legend>Month</legend>
+      <div class="row2">
+        <div><label>Month key (e.g. 2026-06)</label><input id="m-key" placeholder="2026-06" required></div>
+        <div><label>Period label (e.g. JUNE 2026)</label><input id="m-period" placeholder="JUNE 2026" required></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Team</legend>
+      <label>Working days</label><input id="t-days" type="number" value="20">
+      <label>Engineers (3)</label>
+      <div class="row" style="margin-top:4px">
+        <input id="e1-name" placeholder="Member 1 name" value="Member 1">
+        <input id="e1-cap" type="number" placeholder="Capacity">
+        <input id="e1-act" type="number" placeholder="Actual">
+      </div>
+      <div class="row" style="margin-top:6px">
+        <input id="e2-name" placeholder="Member 2 name" value="Member 2">
+        <input id="e2-cap" type="number" placeholder="Capacity">
+        <input id="e2-act" type="number" placeholder="Actual">
+      </div>
+      <div class="row" style="margin-top:6px">
+        <input id="e3-name" placeholder="Member 3 name" value="Member 3">
+        <input id="e3-cap" type="number" placeholder="Capacity">
+        <input id="e3-act" type="number" placeholder="Actual">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Project — Effort</legend>
+      <div class="row2">
+        <div><label>Planned effort (h)</label><input id="p-planned" type="number"></div>
+        <div><label>Billable effort (h)</label><input id="p-actual" type="number"></div>
+      </div>
+      <div class="row2">
+        <div><label>AI contribution (%)</label><input id="p-ai" type="number"></div>
+        <div><label>Status</label>
+          <select id="p-status">
+            <option value="on-schedule">On Schedule</option>
+            <option value="at-risk">At Risk</option>
+            <option value="delayed">Delayed</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Project — Work Breakdown</legend>
+      <div class="row2">
+        <div><label>Section Reuse Task</label><input id="p-reuse" type="number"></div>
+        <div><label>Section Revision Task</label><input id="p-revision" type="number"></div>
+      </div>
+      <div class="row2">
+        <div><label>Section Creation Task</label><input id="p-creation" type="number"></div>
+        <div><label>Total Meeting Hours</label><input id="p-meeting" type="number"></div>
+      </div>
+      <label>Tasks (used to compute Total Task Completed)</label>
+      <div id="tasks-list"></div>
+      <button type="button" class="add-btn" onclick="addTask()">+ Add task</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Project — Narrative</legend>
+      <label>Key Highlights</label><textarea id="p-highlights" rows="3"></textarea>
+      <label>Critical Blockers</label><textarea id="p-blockers" rows="2"></textarea>
+      <label>Summary of the Month (one bullet per line)</label><textarea id="p-summary" rows="3"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Project — Risk Register</legend>
+      <div id="risks-list"></div>
+      <button type="button" class="add-btn" onclick="addRisk()">+ Add risk</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Home — Current Issues</legend>
+      <div id="issues-list"></div>
+      <button type="button" class="add-btn" onclick="addIssue()">+ Add issue</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Home — Risk Register (overview)</legend>
+      <div id="home-risks-list"></div>
+      <button type="button" class="add-btn" onclick="addHomeRisk()">+ Add risk</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Home — Upcoming</legend>
+      <div id="upcoming-list"></div>
+      <button type="button" class="add-btn" onclick="addUpcoming()">+ Add item</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Home — Client Feedback (one per month)</legend>
+      <label>Client name</label><input id="f-name">
+      <label>Role / Company</label><input id="f-role">
+      <label>Quote</label><textarea id="f-quote" rows="2"></textarea>
+    </fieldset>
+
+    <button type="button" class="submit-btn" onclick="generate()">Generate code block</button>
+  </form>
+
+  <div id="output" style="display:none">
+    <label>Copy this entire block:</label>
+    <textarea id="out-code" readonly></textarea>
+    <button class="copy-btn" onclick="copyOut()">Copy to clipboard</button>
+    <div class="hint">
+      1. Open <code>index.html</code> → find the comment block starting "MONTHLY DATA".<br>
+      2. Paste this entire block just above it.<br>
+      3. In the <code>MONTHS</code> array further down, add: <code>{ key: "<span id="hint-key"></span>", label: "<span id="hint-label"></span>" }</code> as the first line.<br>
+      4. Save, re-upload <code>index.html</code> to GitHub.
+    </div>
+  </div>
+</div>
+
+<script>
+function rowTemplate(containerId, fields, removeLabel){
+  const div = document.createElement('div');
+  div.className = 'rep-block';
+  div.innerHTML = `<button type="button" onclick="this.parentElement.remove()">Remove</button>` + fields;
+  document.getElementById(containerId).appendChild(div);
+  return div;
+}
+
+function addTask(){
+  rowTemplate('tasks-list', `
+    <label>Task name</label><input class="task-name" placeholder="e.g. 3D Model Creation">
+    <label>Actual hours</label><input class="task-actual" type="number">`);
+}
+function addRisk(){
+  rowTemplate('risks-list', `
+    <label>Risk</label><input class="risk-risk" placeholder="N/A if none">
+    <label>Solution</label><input class="risk-solution" placeholder="N/A">
+    <label>Action</label><input class="risk-action" placeholder="N/A">`);
+}
+function addIssue(){
+  rowTemplate('issues-list', `
+    <label>Title</label><input class="issue-title">
+    <label>Description</label><input class="issue-desc">
+    <label>Severity</label>
+    <select class="issue-sev"><option value="high">High</option><option value="med">Medium</option><option value="low">Low</option></select>
+    <label>Owner</label><input class="issue-owner">`);
+}
+function addHomeRisk(){
+  rowTemplate('home-risks-list', `
+    <label>Title</label><input class="hrisk-title" placeholder="N/A if none">
+    <label>Description</label><input class="hrisk-desc">
+    <label>Severity</label>
+    <select class="hrisk-sev"><option value="low">Low</option><option value="med">Medium</option><option value="high">High</option></select>`);
+}
+function addUpcoming(){
+  rowTemplate('upcoming-list', `
+    <label>Title</label><input class="up-title">
+    <label>Description</label><input class="up-desc">
+    <label>Date (e.g. 02 Jun 2026)</label><input class="up-date">`);
+}
+
+function esc(s){ return (s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
+
+function generate(){
+  const key = document.getElementById('m-key').value.trim();
+  const period = document.getElementById('m-period').value.trim();
+  if(!key || !period){ alert('Month key and period are required.'); return; }
+
+  const engineers = [1,2,3].map(i=>{
+    const name = document.getElementById(`e${i}-name`).value.trim();
+    const cap = document.getElementById(`e${i}-cap`).value || 0;
+    const act = document.getElementById(`e${i}-act`).value || 0;
+    return `      { name: "${esc(name)}", capacity: ${cap}, actual: ${act} },`;
+  }).join('\n');
+
+  const tasks = Array.from(document.querySelectorAll('#tasks-list .rep-block')).map(b=>{
+    const name = b.querySelector('.task-name').value.trim();
+    const act = b.querySelector('.task-actual').value || 0;
+    return `      { name: "${esc(name)}", planned: null, actual: ${act} },`;
+  }).join('\n');
+
+  const risks = Array.from(document.querySelectorAll('#risks-list .rep-block')).map(b=>{
+    const r = esc(b.querySelector('.risk-risk').value.trim() || 'N/A');
+    const s = esc(b.querySelector('.risk-solution').value.trim() || 'N/A');
+    const a = esc(b.querySelector('.risk-action').value.trim() || 'N/A');
+    return `      { risk: "${r}", solution: "${s}", action: "${a}" },`;
+  }).join('\n') || `      { risk: "N/A", solution: "N/A", action: "N/A" },`;
+
+  const issues = Array.from(document.querySelectorAll('#issues-list .rep-block')).map(b=>{
+    const t = esc(b.querySelector('.issue-title').value.trim());
+    const d = esc(b.querySelector('.issue-desc').value.trim());
+    const sev = b.querySelector('.issue-sev').value;
+    const o = esc(b.querySelector('.issue-owner').value.trim());
+    return `      { title: "${t}", desc: "${d}", severity: "${sev}", owner: "${o}" },`;
+  }).join('\n');
+
+  const homeRisks = Array.from(document.querySelectorAll('#home-risks-list .rep-block')).map(b=>{
+    const t = esc(b.querySelector('.hrisk-title').value.trim() || 'N/A');
+    const d = esc(b.querySelector('.hrisk-desc').value.trim() || 'No active risks identified this period.');
+    const sev = b.querySelector('.hrisk-sev').value;
+    return `      { title: "${t}", desc: "${d}", severity: "${sev}" },`;
+  }).join('\n') || `      { title: "N/A", desc: "No active risks identified this period.", severity: "low" },`;
+
+  const upcoming = Array.from(document.querySelectorAll('#upcoming-list .rep-block')).map(b=>{
+    const t = esc(b.querySelector('.up-title').value.trim());
+    const d = esc(b.querySelector('.up-desc').value.trim());
+    const dt = esc(b.querySelector('.up-date').value.trim());
+    return `      { title: "${t}", desc: "${d}", date: "${dt}" },`;
+  }).join('\n');
+
+  const fName = esc(document.getElementById('f-name').value.trim());
+  const fRole = esc(document.getElementById('f-role').value.trim());
+  const fQuote = esc(document.getElementById('f-quote').value.trim());
+
+  const summaryLines = document.getElementById('p-summary').value.split('\n').map(s=>s.trim()).filter(Boolean)
+    .map(s=>`      "${esc(s)}",`).join('\n');
+
+  const code = `window.REPORT_DATA["${esc(key)}"] = {
+  period: "${esc(period)}",
+  home: {
+    currentIssues: [
+${issues}
+    ],
+    risks: [
+${homeRisks}
+    ],
+    upcoming: [
+${upcoming}
+    ],
+    feedback: [
+      { name: "${fName}", role: "${fRole}", quote: "${fQuote}" }
+    ]
+  },
+  team: {
+    workingDays: ${document.getElementById('t-days').value || 0},
+    engineers: [
+${engineers}
+    ]
+  },
+  project: {
+    name: "Etteplan_Wartsila_Marine SPC",
+    plannedEffort: ${document.getElementById('p-planned').value || 0},
+    actualEffort: ${document.getElementById('p-actual').value || 0},
+    aiContribution: ${document.getElementById('p-ai').value || 0},
+    status: "${document.getElementById('p-status').value}",
+    sectionReuseTask: ${document.getElementById('p-reuse').value || 0},
+    sectionRevisionTask: ${document.getElementById('p-revision').value || 0},
+    sectionCreationTask: ${document.getElementById('p-creation').value || 0},
+    totalMeetingHours: ${document.getElementById('p-meeting').value || 0},
+    tasks: [
+${tasks}
+    ],
+    highlights: "${esc(document.getElementById('p-highlights').value.trim())}",
+    blockers: "${esc(document.getElementById('p-blockers').value.trim())}",
+    summary: [
+${summaryLines}
+    ],
+    risks: [
+${risks}
+    ]
+  }
+};`;
+
+  document.getElementById('out-code').value = code;
+  document.getElementById('hint-key').textContent = key;
+  document.getElementById('hint-label').textContent = period;
+  document.getElementById('output').style.display = 'block';
+  document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+
+function copyOut(){
+  const el = document.getElementById('out-code');
+  el.select();
+  document.execCommand('copy');
+  alert('Copied. Now paste into index.html as instructed.');
+}
+
+// start each repeater with one row
+addTask(); addRisk(); addIssue(); addHomeRisk(); addUpcoming();
+</script>
+</body>
+</html>
