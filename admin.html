@@ -69,7 +69,7 @@ textarea{resize:vertical}
         <div><label>Billable effort (h)</label><input id="p-actual" type="number"></div>
       </div>
       <div class="row2">
-        <div><label>AI contribution (%)</label><input id="p-ai" type="number"></div>
+        <div><label>AI contribution — number only, e.g. 5.84</label><input id="p-ai" type="number" step="0.01"></div>
         <div><label>Status</label>
           <select id="p-status">
             <option value="on-schedule">On Schedule</option>
@@ -200,14 +200,14 @@ function generate(){
 
   const engineers = [1,2,3].map(i=>{
     const name = document.getElementById(`e${i}-name`).value.trim();
-    const cap = document.getElementById(`e${i}-cap`).value || 0;
-    const act = document.getElementById(`e${i}-act`).value || 0;
+    const cap = parseFloat(document.getElementById(`e${i}-cap`).value) || 0;
+    const act = parseFloat(document.getElementById(`e${i}-act`).value) || 0;
     return `      { name: "${esc(name)}", capacity: ${cap}, actual: ${act} },`;
   }).join('\n');
 
   const tasks = Array.from(document.querySelectorAll('#tasks-list .rep-block')).map(b=>{
     const name = b.querySelector('.task-name').value.trim();
-    const act = b.querySelector('.task-actual').value || 0;
+    const act = parseFloat(b.querySelector('.task-actual').value) || 0;
     return `      { name: "${esc(name)}", planned: null, actual: ${act} },`;
   }).join('\n');
 
@@ -264,21 +264,21 @@ ${upcoming}
     ]
   },
   team: {
-    workingDays: ${document.getElementById('t-days').value || 0},
+    workingDays: ${parseInt(document.getElementById('t-days').value) || 0},
     engineers: [
 ${engineers}
     ]
   },
   project: {
     name: "Etteplan_Wartsila_Marine SPC",
-    plannedEffort: ${document.getElementById('p-planned').value || 0},
-    actualEffort: ${document.getElementById('p-actual').value || 0},
-    aiContribution: ${document.getElementById('p-ai').value || 0},
+    plannedEffort: ${parseFloat(document.getElementById('p-planned').value) || 0},
+    actualEffort: ${parseFloat(document.getElementById('p-actual').value) || 0},
+    aiContribution: ${parseFloat(document.getElementById('p-ai').value) || 0},
     status: "${document.getElementById('p-status').value}",
-    sectionReuseTask: ${document.getElementById('p-reuse').value || 0},
-    sectionRevisionTask: ${document.getElementById('p-revision').value || 0},
-    sectionCreationTask: ${document.getElementById('p-creation').value || 0},
-    totalMeetingHours: ${document.getElementById('p-meeting').value || 0},
+    sectionReuseTask: ${parseFloat(document.getElementById('p-reuse').value) || 0},
+    sectionRevisionTask: ${parseFloat(document.getElementById('p-revision').value) || 0},
+    sectionCreationTask: ${parseFloat(document.getElementById('p-creation').value) || 0},
+    totalMeetingHours: ${parseFloat(document.getElementById('p-meeting').value) || 0},
     tasks: [
 ${tasks}
     ],
