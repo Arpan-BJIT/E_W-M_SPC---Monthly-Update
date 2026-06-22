@@ -13,7 +13,7 @@ h1{font-size:20px;margin-bottom:4px}
 fieldset{border:1px solid #E2E8F0;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.2rem}
 legend{font-weight:700;font-size:13px;color:#1565C0;padding:0 6px}
 label{display:block;font-size:12px;font-weight:600;color:#334155;margin:.6rem 0 .25rem}
-input,textarea,select{width:100%;padding:7px 9px;border:1px solid #CBD5E1;border-radius:6px;font-size:13px}
+input,textarea,select{width:100%;padding:7px 9px;border:1px solid #CBD5E1;border-radius:6px;font-size:13px;font-family:Arial,sans-serif}
 textarea{resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -21,55 +21,64 @@ textarea{resize:vertical}
 .rep-block button{position:absolute;top:6px;right:6px;background:#FCEBEB;color:#C62828;border:none;border-radius:4px;font-size:11px;padding:3px 8px;cursor:pointer}
 .add-btn{background:#E3F2FD;color:#1565C0;border:none;border-radius:6px;font-size:12px;padding:6px 12px;cursor:pointer;font-weight:600}
 .submit-btn{background:#1565C0;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:12px;width:100%;cursor:pointer;margin-top:1rem}
+.submit-btn:disabled{background:#94A3B8;cursor:not-allowed}
 #output{margin-top:1.5rem}
-#output textarea{height:320px;font-family:monospace;font-size:12px;background:#0F172A;color:#A7F3D0}
+#output textarea{height:320px;font-family:'Courier New',monospace;font-size:12px;background:#0F172A;color:#A7F3D0;white-space:pre}
 .copy-btn{background:#2E7D32;color:#fff;border:none;border-radius:6px;font-size:13px;padding:8px 14px;cursor:pointer;margin-top:8px}
-.hint{font-size:12px;color:#64748B;margin-top:.5rem;line-height:1.5}
+.hint{font-size:12px;color:#64748B;margin-top:.5rem;line-height:1.6}
+.status-box{padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:1rem;display:none}
+.status-ok{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
+.status-err{background:#FFEBEE;color:#C62828;border:1px solid #EF9A9A}
+.field-hint{font-size:11px;color:#94A3B8;margin-top:2px}
+.required-mark{color:#C62828}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Monthly Data Generator (Admin only)</h1>
-  <p class="note">Fill this in, click Generate, then paste the result into <code>index.html</code> per the instructions shown. This page does not save anything — it only builds the code block for you.</p>
+  <p class="note">Fill this in, click Generate. The tool tests the code for errors automatically before showing it — if something's wrong, it tells you exactly what, instead of giving you broken code. This page saves nothing; it only builds text for you to paste.</p>
 
-  <form id="form">
+  <div id="status" class="status-box"></div>
+
+  <form id="form" onsubmit="return false">
     <fieldset>
-      <legend>Month</legend>
+      <legend>Month <span class="required-mark">*</span></legend>
       <div class="row2">
-        <div><label>Month key (e.g. 2026-06)</label><input id="m-key" placeholder="2026-06" required></div>
-        <div><label>Period label (e.g. JUNE 2026)</label><input id="m-period" placeholder="JUNE 2026" required></div>
+        <div><label>Month key</label><input id="m-key" placeholder="2026-06"><div class="field-hint">Format: YYYY-MM</div></div>
+        <div><label>Period label</label><input id="m-period" placeholder="JUNE 2026"></div>
       </div>
     </fieldset>
 
     <fieldset>
       <legend>Team</legend>
-      <label>Working days</label><input id="t-days" type="number" value="20">
-      <label>Engineers (3)</label>
-      <div class="row" style="margin-top:4px">
-        <input id="e1-name" placeholder="Member 1 name" value="Member 1">
-        <input id="e1-cap" type="number" placeholder="Capacity">
-        <input id="e1-act" type="number" placeholder="Actual">
+      <label>Working days</label><input id="t-days" type="number" min="0" value="20">
+      <label style="margin-top:.8rem">Engineers</label>
+      <div class="field-hint" style="margin-bottom:6px">Leave a row's name blank to skip it — it won't be included.</div>
+      <div class="row">
+        <input id="e1-name" placeholder="Engineer name" value="Member 1">
+        <input id="e1-cap" type="number" min="0" placeholder="Capacity (h)">
+        <input id="e1-act" type="number" min="0" placeholder="Actual (h)">
       </div>
       <div class="row" style="margin-top:6px">
-        <input id="e2-name" placeholder="Member 2 name" value="Member 2">
-        <input id="e2-cap" type="number" placeholder="Capacity">
-        <input id="e2-act" type="number" placeholder="Actual">
+        <input id="e2-name" placeholder="Engineer name" value="Member 2">
+        <input id="e2-cap" type="number" min="0" placeholder="Capacity (h)">
+        <input id="e2-act" type="number" min="0" placeholder="Actual (h)">
       </div>
       <div class="row" style="margin-top:6px">
-        <input id="e3-name" placeholder="Member 3 name" value="Member 3">
-        <input id="e3-cap" type="number" placeholder="Capacity">
-        <input id="e3-act" type="number" placeholder="Actual">
+        <input id="e3-name" placeholder="Engineer name" value="Member 3">
+        <input id="e3-cap" type="number" min="0" placeholder="Capacity (h)">
+        <input id="e3-act" type="number" min="0" placeholder="Actual (h)">
       </div>
     </fieldset>
 
     <fieldset>
       <legend>Project — Effort</legend>
       <div class="row2">
-        <div><label>Planned effort (h)</label><input id="p-planned" type="number"></div>
-        <div><label>Billable effort (h)</label><input id="p-actual" type="number"></div>
+        <div><label>Planned effort (h)</label><input id="p-planned" type="number" min="0" step="0.01"></div>
+        <div><label>Billable effort (h)</label><input id="p-actual" type="number" min="0" step="0.01"></div>
       </div>
       <div class="row2">
-        <div><label>AI contribution — number only, e.g. 5.84</label><input id="p-ai" type="number" step="0.01"></div>
+        <div><label>AI contribution (%) — number only</label><input id="p-ai" type="number" min="0" max="100" step="0.01"><div class="field-hint">e.g. 5.84 — do not type the % symbol</div></div>
         <div><label>Status</label>
           <select id="p-status">
             <option value="on-schedule">On Schedule</option>
@@ -83,20 +92,22 @@ textarea{resize:vertical}
     <fieldset>
       <legend>Project — Work Breakdown</legend>
       <div class="row2">
-        <div><label>Section Reuse Task</label><input id="p-reuse" type="number"></div>
-        <div><label>Section Revision Task</label><input id="p-revision" type="number"></div>
+        <div><label>Section Reuse Task</label><input id="p-reuse" type="number" min="0" step="0.01"></div>
+        <div><label>Section Revision Task</label><input id="p-revision" type="number" min="0" step="0.01"></div>
       </div>
       <div class="row2">
-        <div><label>Section Creation Task</label><input id="p-creation" type="number"></div>
-        <div><label>Total Meeting Hours</label><input id="p-meeting" type="number"></div>
+        <div><label>Section Creation Task</label><input id="p-creation" type="number" min="0" step="0.01"></div>
+        <div><label>Total Meeting Hours</label><input id="p-meeting" type="number" min="0" step="0.01"></div>
       </div>
-      <label>Tasks (used to compute Total Task Completed)</label>
+      <label style="margin-top:.8rem">Tasks (adds up to "Total Task Completed")</label>
+      <div class="field-hint" style="margin-bottom:6px">Blank task name = skipped.</div>
       <div id="tasks-list"></div>
       <button type="button" class="add-btn" onclick="addTask()">+ Add task</button>
     </fieldset>
 
     <fieldset>
       <legend>Project — Narrative</legend>
+      <div class="field-hint" style="margin-bottom:6px">Line breaks inside these boxes are fine — the tool handles them safely.</div>
       <label>Key Highlights</label><textarea id="p-highlights" rows="3"></textarea>
       <label>Critical Blockers</label><textarea id="p-blockers" rows="2"></textarea>
       <label>Summary of the Month (one bullet per line)</label><textarea id="p-summary" rows="3"></textarea>
@@ -104,24 +115,28 @@ textarea{resize:vertical}
 
     <fieldset>
       <legend>Project — Risk Register</legend>
+      <div class="field-hint" style="margin-bottom:6px">Leave empty (no rows) if there are no risks — the tool will show "N/A" automatically.</div>
       <div id="risks-list"></div>
       <button type="button" class="add-btn" onclick="addRisk()">+ Add risk</button>
     </fieldset>
 
     <fieldset>
       <legend>Home — Current Issues</legend>
+      <div class="field-hint" style="margin-bottom:6px">Blank title = skipped. Leave empty for no issues.</div>
       <div id="issues-list"></div>
       <button type="button" class="add-btn" onclick="addIssue()">+ Add issue</button>
     </fieldset>
 
     <fieldset>
       <legend>Home — Risk Register (overview)</legend>
+      <div class="field-hint" style="margin-bottom:6px">Leave empty for "no active risks".</div>
       <div id="home-risks-list"></div>
       <button type="button" class="add-btn" onclick="addHomeRisk()">+ Add risk</button>
     </fieldset>
 
     <fieldset>
       <legend>Home — Upcoming</legend>
+      <div class="field-hint" style="margin-bottom:6px">Blank title = skipped.</div>
       <div id="upcoming-list"></div>
       <button type="button" class="add-btn" onclick="addUpcoming()">+ Add item</button>
     </fieldset>
@@ -133,41 +148,42 @@ textarea{resize:vertical}
       <label>Quote</label><textarea id="f-quote" rows="2"></textarea>
     </fieldset>
 
-    <button type="button" class="submit-btn" onclick="generate()">Generate code block</button>
+    <button type="button" class="submit-btn" id="gen-btn" onclick="generate()">Generate &amp; validate code block</button>
   </form>
 
   <div id="output" style="display:none">
     <label>Copy this entire block:</label>
     <textarea id="out-code" readonly></textarea>
-    <button class="copy-btn" onclick="copyOut()">Copy to clipboard</button>
+    <button class="copy-btn" onclick="copyOut()" type="button">Copy to clipboard</button>
     <div class="hint">
       1. Open <code>index.html</code> → find the comment block starting "MONTHLY DATA".<br>
       2. Paste this entire block just above it.<br>
-      3. In the <code>MONTHS</code> array further down, add: <code>{ key: "<span id="hint-key"></span>", label: "<span id="hint-label"></span>" }</code> as the first line.<br>
-      4. Save, re-upload <code>index.html</code> to GitHub.
+      3. In the <code>MONTHS</code> array further down, add as the <u>first</u> line: <code>{ key: "<span id="hint-key"></span>", label: "<span id="hint-label"></span>" },</code><br>
+      4. Save, re-upload <code>index.html</code> to GitHub.<br>
+      <strong>This code has already been tested and parses without errors.</strong>
     </div>
   </div>
 </div>
 
 <script>
-function rowTemplate(containerId, fields, removeLabel){
+/* ───────────────────────── repeater rows ───────────────────────── */
+function rowTemplate(containerId, fields){
   const div = document.createElement('div');
   div.className = 'rep-block';
   div.innerHTML = `<button type="button" onclick="this.parentElement.remove()">Remove</button>` + fields;
   document.getElementById(containerId).appendChild(div);
   return div;
 }
-
 function addTask(){
   rowTemplate('tasks-list', `
     <label>Task name</label><input class="task-name" placeholder="e.g. 3D Model Creation">
-    <label>Actual hours</label><input class="task-actual" type="number">`);
+    <label>Actual hours</label><input class="task-actual" type="number" min="0" step="0.01">`);
 }
 function addRisk(){
   rowTemplate('risks-list', `
-    <label>Risk</label><input class="risk-risk" placeholder="N/A if none">
-    <label>Solution</label><input class="risk-solution" placeholder="N/A">
-    <label>Action</label><input class="risk-action" placeholder="N/A">`);
+    <label>Risk</label><input class="risk-risk" placeholder="Describe the risk">
+    <label>Solution</label><input class="risk-solution" placeholder="Proposed solution">
+    <label>Action</label><input class="risk-action" placeholder="Action taken / status">`);
 }
 function addIssue(){
   rowTemplate('issues-list', `
@@ -179,7 +195,7 @@ function addIssue(){
 }
 function addHomeRisk(){
   rowTemplate('home-risks-list', `
-    <label>Title</label><input class="hrisk-title" placeholder="N/A if none">
+    <label>Title</label><input class="hrisk-title">
     <label>Description</label><input class="hrisk-desc">
     <label>Severity</label>
     <select class="hrisk-sev"><option value="low">Low</option><option value="med">Medium</option><option value="high">High</option></select>`);
@@ -188,110 +204,261 @@ function addUpcoming(){
   rowTemplate('upcoming-list', `
     <label>Title</label><input class="up-title">
     <label>Description</label><input class="up-desc">
-    <label>Date (e.g. 02 Jun 2026)</label><input class="up-date">`);
+    <label>Date</label><input class="up-date" placeholder="e.g. 02 Jun 2026">`);
 }
 
-function esc(s){ return (s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
+/* ───────────────────────── safe string handling ───────────────────────── */
+// JSON.stringify is the only fully correct way to turn an arbitrary string
+// into a safe, valid JS string literal. It handles quotes, backslashes,
+// newlines, tabs, unicode, everything — there is no escaping bug possible
+// here, unlike a hand-written replace() chain.
+function jsStr(s){
+  return JSON.stringify((s===null||s===undefined) ? '' : String(s));
+}
+
+// Strict number parser: returns a valid finite number or 0. Never lets
+// stray text (like a typed "%" or "h") leak into the output.
+function num(id){
+  const raw = document.getElementById(id).value;
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+}
+function intNum(id){
+  const raw = document.getElementById(id).value;
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function txt(id){
+  return document.getElementById(id).value.trim();
+}
+
+/* ───────────────────────── data collection ───────────────────────── */
+function collectEngineers(){
+  const list = [];
+  [1,2,3].forEach(i=>{
+    const name = txt(`e${i}-name`);
+    if(!name) return; // skip empty rows entirely — fixes the April blank-row bug
+    list.push({ name, capacity: num(`e${i}-cap`), actual: num(`e${i}-act`) });
+  });
+  return list;
+}
+
+function collectTasks(){
+  const list = [];
+  document.querySelectorAll('#tasks-list .rep-block').forEach(b=>{
+    const name = b.querySelector('.task-name').value.trim();
+    if(!name) return;
+    list.push({ name, actual: (()=>{ const n=parseFloat(b.querySelector('.task-actual').value); return Number.isFinite(n)?n:0; })() });
+  });
+  return list;
+}
+
+function collectRisks(){
+  const list = [];
+  document.querySelectorAll('#risks-list .rep-block').forEach(b=>{
+    const risk = b.querySelector('.risk-risk').value.trim();
+    if(!risk) return;
+    list.push({
+      risk,
+      solution: b.querySelector('.risk-solution').value.trim() || 'N/A',
+      action: b.querySelector('.risk-action').value.trim() || 'N/A'
+    });
+  });
+  if(list.length===0) list.push({ risk:'N/A', solution:'N/A', action:'N/A' });
+  return list;
+}
+
+function collectIssues(){
+  const list = [];
+  document.querySelectorAll('#issues-list .rep-block').forEach(b=>{
+    const title = b.querySelector('.issue-title').value.trim();
+    if(!title) return;
+    list.push({
+      title,
+      desc: b.querySelector('.issue-desc').value.trim(),
+      severity: b.querySelector('.issue-sev').value,
+      owner: b.querySelector('.issue-owner').value.trim()
+    });
+  });
+  return list;
+}
+
+function collectHomeRisks(){
+  const list = [];
+  document.querySelectorAll('#home-risks-list .rep-block').forEach(b=>{
+    const title = b.querySelector('.hrisk-title').value.trim();
+    if(!title) return;
+    list.push({
+      title,
+      desc: b.querySelector('.hrisk-desc').value.trim(),
+      severity: b.querySelector('.hrisk-sev').value
+    });
+  });
+  if(list.length===0) list.push({ title:'N/A', desc:'No active risks identified this period.', severity:'low' });
+  return list;
+}
+
+function collectUpcoming(){
+  const list = [];
+  document.querySelectorAll('#upcoming-list .rep-block').forEach(b=>{
+    const title = b.querySelector('.up-title').value.trim();
+    if(!title) return;
+    list.push({
+      title,
+      desc: b.querySelector('.up-desc').value.trim(),
+      date: b.querySelector('.up-date').value.trim()
+    });
+  });
+  return list;
+}
+
+function collectSummary(){
+  return txt('p-summary').split('\n').map(s=>s.trim()).filter(Boolean);
+}
+
+/* ───────────────────────── code generation ───────────────────────── */
+// Build the JS source as a string using jsStr() for every single text value.
+// No manual quote-wrapping anywhere below — that's what caused every past
+// bug (unescaped newlines, stray % signs, blank rows). jsStr() guarantees
+// a syntactically valid literal every time, for any input.
+
+function arrLines(items, fields, indent){
+  const pad = ' '.repeat(indent);
+  return items.map(item=>{
+    const parts = fields.map(([key,val,isStr])=> `${key}: ${isStr ? jsStr(val(item)) : val(item)}`);
+    return `${pad}{ ${parts.join(', ')} },`;
+  }).join('\n');
+}
 
 function generate(){
-  const key = document.getElementById('m-key').value.trim();
-  const period = document.getElementById('m-period').value.trim();
-  if(!key || !period){ alert('Month key and period are required.'); return; }
+  const status = document.getElementById('status');
+  status.style.display='none';
 
-  const engineers = [1,2,3].map(i=>{
-    const name = document.getElementById(`e${i}-name`).value.trim();
-    const cap = parseFloat(document.getElementById(`e${i}-cap`).value) || 0;
-    const act = parseFloat(document.getElementById(`e${i}-act`).value) || 0;
-    return `      { name: "${esc(name)}", capacity: ${cap}, actual: ${act} },`;
-  }).join('\n');
+  const key = txt('m-key');
+  const period = txt('m-period');
 
-  const tasks = Array.from(document.querySelectorAll('#tasks-list .rep-block')).map(b=>{
-    const name = b.querySelector('.task-name').value.trim();
-    const act = parseFloat(b.querySelector('.task-actual').value) || 0;
-    return `      { name: "${esc(name)}", planned: null, actual: ${act} },`;
-  }).join('\n');
+  const problems = [];
+  if(!key) problems.push('Month key is required.');
+  else if(!/^\d{4}-\d{2}$/.test(key)) problems.push('Month key must look like 2026-06 (YYYY-MM).');
+  if(!period) problems.push('Period label is required.');
 
-  const risks = Array.from(document.querySelectorAll('#risks-list .rep-block')).map(b=>{
-    const r = esc(b.querySelector('.risk-risk').value.trim() || 'N/A');
-    const s = esc(b.querySelector('.risk-solution').value.trim() || 'N/A');
-    const a = esc(b.querySelector('.risk-action').value.trim() || 'N/A');
-    return `      { risk: "${r}", solution: "${s}", action: "${a}" },`;
-  }).join('\n') || `      { risk: "N/A", solution: "N/A", action: "N/A" },`;
+  const engineers = collectEngineers();
+  if(engineers.length===0) problems.push('At least one engineer with a name is required.');
 
-  const issues = Array.from(document.querySelectorAll('#issues-list .rep-block')).map(b=>{
-    const t = esc(b.querySelector('.issue-title').value.trim());
-    const d = esc(b.querySelector('.issue-desc').value.trim());
-    const sev = b.querySelector('.issue-sev').value;
-    const o = esc(b.querySelector('.issue-owner').value.trim());
-    return `      { title: "${t}", desc: "${d}", severity: "${sev}", owner: "${o}" },`;
-  }).join('\n');
+  if(problems.length){
+    status.className = 'status-box status-err';
+    status.style.display = 'block';
+    status.innerHTML = '<strong>Fix before generating:</strong><br>' + problems.join('<br>');
+    status.scrollIntoView({behavior:'smooth'});
+    return;
+  }
 
-  const homeRisks = Array.from(document.querySelectorAll('#home-risks-list .rep-block')).map(b=>{
-    const t = esc(b.querySelector('.hrisk-title').value.trim() || 'N/A');
-    const d = esc(b.querySelector('.hrisk-desc').value.trim() || 'No active risks identified this period.');
-    const sev = b.querySelector('.hrisk-sev').value;
-    return `      { title: "${t}", desc: "${d}", severity: "${sev}" },`;
-  }).join('\n') || `      { title: "N/A", desc: "No active risks identified this period.", severity: "low" },`;
+  const issues = collectIssues();
+  const homeRisks = collectHomeRisks();
+  const upcoming = collectUpcoming();
+  const tasks = collectTasks();
+  const risks = collectRisks();
+  const summaryLines = collectSummary();
 
-  const upcoming = Array.from(document.querySelectorAll('#upcoming-list .rep-block')).map(b=>{
-    const t = esc(b.querySelector('.up-title').value.trim());
-    const d = esc(b.querySelector('.up-desc').value.trim());
-    const dt = esc(b.querySelector('.up-date').value.trim());
-    return `      { title: "${t}", desc: "${d}", date: "${dt}" },`;
-  }).join('\n');
+  const issuesBlock = issues.length
+    ? arrLines(issues, [['title',i=>i.title,true],['desc',i=>i.desc,true],['severity',i=>i.severity,true],['owner',i=>i.owner,true]], 6)
+    : '';
+  const homeRisksBlock = arrLines(homeRisks, [['title',i=>i.title,true],['desc',i=>i.desc,true],['severity',i=>i.severity,true]], 6);
+  const upcomingBlock = upcoming.length
+    ? arrLines(upcoming, [['title',i=>i.title,true],['desc',i=>i.desc,true],['date',i=>i.date,true]], 6)
+    : '';
+  const engineersBlock = arrLines(engineers, [['name',i=>i.name,true],['capacity',i=>i.capacity,false],['actual',i=>i.actual,false]], 6);
+  const tasksBlock = tasks.length
+    ? arrLines(tasks, [['name',i=>i.name,true],['planned',()=>'null',false],['actual',i=>i.actual,false]], 6)
+    : '      { name: "No tasks recorded", planned: null, actual: 0 },';
+  const risksBlock = arrLines(risks, [['risk',i=>i.risk,true],['solution',i=>i.solution,true],['action',i=>i.action,true]], 6);
+  const summaryBlock = summaryLines.length
+    ? summaryLines.map(s=>`      ${jsStr(s)},`).join('\n')
+    : '      "No summary provided.",';
 
-  const fName = esc(document.getElementById('f-name').value.trim());
-  const fRole = esc(document.getElementById('f-role').value.trim());
-  const fQuote = esc(document.getElementById('f-quote').value.trim());
-
-  const summaryLines = document.getElementById('p-summary').value.split('\n').map(s=>s.trim()).filter(Boolean)
-    .map(s=>`      "${esc(s)}",`).join('\n');
-
-  const code = `window.REPORT_DATA["${esc(key)}"] = {
-  period: "${esc(period)}",
+  const code = `window.REPORT_DATA[${jsStr(key)}] = {
+  period: ${jsStr(period)},
   home: {
     currentIssues: [
-${issues}
+${issuesBlock}
     ],
     risks: [
-${homeRisks}
+${homeRisksBlock}
     ],
     upcoming: [
-${upcoming}
+${upcomingBlock}
     ],
     feedback: [
-      { name: "${fName}", role: "${fRole}", quote: "${fQuote}" }
+      { name: ${jsStr(txt('f-name'))}, role: ${jsStr(txt('f-role'))}, quote: ${jsStr(txt('f-quote'))} }
     ]
   },
   team: {
-    workingDays: ${parseInt(document.getElementById('t-days').value) || 0},
+    workingDays: ${intNum('t-days')},
     engineers: [
-${engineers}
+${engineersBlock}
     ]
   },
   project: {
     name: "Etteplan_Wartsila_Marine SPC",
-    plannedEffort: ${parseFloat(document.getElementById('p-planned').value) || 0},
-    actualEffort: ${parseFloat(document.getElementById('p-actual').value) || 0},
-    aiContribution: ${parseFloat(document.getElementById('p-ai').value) || 0},
-    status: "${document.getElementById('p-status').value}",
-    sectionReuseTask: ${parseFloat(document.getElementById('p-reuse').value) || 0},
-    sectionRevisionTask: ${parseFloat(document.getElementById('p-revision').value) || 0},
-    sectionCreationTask: ${parseFloat(document.getElementById('p-creation').value) || 0},
-    totalMeetingHours: ${parseFloat(document.getElementById('p-meeting').value) || 0},
+    plannedEffort: ${num('p-planned')},
+    actualEffort: ${num('p-actual')},
+    aiContribution: ${num('p-ai')},
+    status: ${jsStr(document.getElementById('p-status').value)},
+    sectionReuseTask: ${num('p-reuse')},
+    sectionRevisionTask: ${num('p-revision')},
+    sectionCreationTask: ${num('p-creation')},
+    totalMeetingHours: ${num('p-meeting')},
     tasks: [
-${tasks}
+${tasksBlock}
     ],
-    highlights: "${esc(document.getElementById('p-highlights').value.trim())}",
-    blockers: "${esc(document.getElementById('p-blockers').value.trim())}",
+    highlights: ${jsStr(txt('p-highlights'))},
+    blockers: ${jsStr(txt('p-blockers'))},
     summary: [
-${summaryLines}
+${summaryBlock}
     ],
     risks: [
-${risks}
+${risksBlock}
     ]
   }
 };`;
+
+  /* ───────────────────────── self-validation ─────────────────────────
+     Before showing the code as "ready", actually execute it in an isolated
+     sandbox object and check the resulting structure. If this throws or
+     produces unexpected shape, we show an error instead of bad code — the
+     generator can never again hand you broken JavaScript silently. */
+  let parsedOk = false;
+  let errorMsg = '';
+  try {
+    const sandbox = { REPORT_DATA: {} };
+    const fn = new Function('window', code + `\nreturn window.REPORT_DATA[${jsStr(key)}];`);
+    const result = fn(sandbox);
+    if(!result || typeof result !== 'object') throw new Error('Generated data did not produce a valid object.');
+    if(!result.team || !Array.isArray(result.team.engineers) || result.team.engineers.length===0){
+      throw new Error('Team engineers list is empty or malformed.');
+    }
+    if(!result.project || !Array.isArray(result.project.tasks)){
+      throw new Error('Project tasks list is malformed.');
+    }
+    if(typeof result.project.aiContribution !== 'number' || !Number.isFinite(result.project.aiContribution)){
+      throw new Error('AI Contribution did not resolve to a valid number.');
+    }
+    parsedOk = true;
+  } catch(e){
+    errorMsg = e.message;
+  }
+
+  if(!parsedOk){
+    status.className = 'status-box status-err';
+    status.style.display = 'block';
+    status.innerHTML = '<strong>Generated code failed validation — not shown.</strong><br>' + errorMsg + '<br>Please check your inputs and try again, or contact support with this message.';
+    status.scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  status.className = 'status-box status-ok';
+  status.style.display = 'block';
+  status.innerHTML = '✓ Code generated and verified — it parses correctly and is safe to paste.';
 
   document.getElementById('out-code').value = code;
   document.getElementById('hint-key').textContent = key;
@@ -302,12 +469,26 @@ ${risks}
 
 function copyOut(){
   const el = document.getElementById('out-code');
+  el.removeAttribute('disabled');
+  el.focus();
   el.select();
-  document.execCommand('copy');
-  alert('Copied. Now paste into index.html as instructed.');
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(el.value).then(()=>{
+      alert('Copied to clipboard.');
+    }).catch(()=>{
+      if(!ok) alert('Could not auto-copy. The text is selected — press Ctrl+C / Cmd+C now.');
+      else alert('Copied to clipboard.');
+    });
+  } else if(ok){
+    alert('Copied to clipboard.');
+  } else {
+    alert('Could not auto-copy. The text is selected — press Ctrl+C / Cmd+C now.');
+  }
 }
 
-// start each repeater with one row
+// seed one row per repeater on load
 addTask(); addRisk(); addIssue(); addHomeRisk(); addUpcoming();
 </script>
 </body>
