@@ -465,53 +465,55 @@ window.REPORT_DATA["2026-03"] = {
 window.REPORT_DATA["2026-04"] = {
   period: "APRIL 2026",
   home: {
-    currentIssues: [],
+    currentIssues: [
+      { title: "Low reuse tasks", desc: "Reuse tasks are not so much.", severity: "med", owner: "Team" },
+    ],
     risks: [
-      { title: "Scope increase", desc: "Client requested additional 2D drawing volume mid-month.", severity: "med" },
+      { title: "Creo license", desc: "Creo license needed to do revision tasks. Reuse tasks are getting rarer", severity: "high" },
     ],
     upcoming: [
-      { title: "Resource planning", desc: "Evaluate need for 6th engineer.", date: "05 May 2026" },
+      { title: "More resuse tasks", desc: "More reuse tasks will be added", date: "May 2026" },
     ],
     feedback: [
-      { name: "A. Korhonen", role: "Wärtsilä Marine — Engineering Lead", rating: 5, quote: "Team absorbed the extra drawing workload smoothly without missing the deadline." },
+      { name: "J. Tuomas", role: "Documentation Engineer", quote: "Everything is going well and training is continuing when Creo license is available." }
     ]
   },
   team: {
-    workingDays: 20,
+    workingDays: 21,
     engineers: [
-      { name: "Member 1", capacity: 160, actual: 158 },
-      { name: "Member 2", capacity: 80,  actual: 78  },
-      { name: "Member 3", capacity: 160, actual: 162 },
+      { name: "Arpan", capacity: 168, actual: 160 },
+      { name: "Farhan", capacity: 168, actual: 168 },
+      { name: "", capacity: 0, actual: 0 },
     ]
   },
   project: {
     name: "Etteplan_Wartsila_Marine SPC",
-    plannedEffort: 295, actualEffort: 296, aiContribution: 30,
+    plannedEffort: 328,
+    actualEffort: 296,
+    aiContribution: 2.89,
     status: "on-schedule",
-    plannedDeadline: "30/04/2026", actualDeadline: "28/04/2026",
-    sectionReuseTask: 50, sectionRevisionTask: 58, sectionCreationTask: 40, totalMeetingHours: 10,
+    sectionReuseTask: 43,
+    sectionRevisionTask: 0,
+    sectionCreationTask: 0,
+    totalMeetingHours: 0,
     tasks: [
-      { name: "New Item / Rev Creation", planned: null, actual: 42 },
-      { name: "3D Model Creation / Update", planned: null, actual: 30 },
-      { name: "2D Drawing Creation / Update", planned: null, actual: 52 },
-      { name: "TC Metadata Update", planned: null, actual: 110 },
-      { name: "Documentation / R&D", planned: null, actual: 8  },
-      { name: "Quality Assurance", planned: null, actual: 28 },
-      { name: "Review, Validation & Release", planned: null, actual: 26 },
+      { name: "Reuse tasks", planned: null, actual: 296 },
     ],
-    highlights: `Team utilised <strong>296 of 295 planned hours</strong>, achieving a <strong>100.3% output</strong> despite a mid-month scope increase in 2D drawing work.`,
-    blockers: `Additional drawing volume required minor reallocation from documentation tasks.`,
+    highlights: "Completed 43 tasks in total
+Client is happy with the performance
+Completely aligned with the timeline",
+    blockers: "Less reuse tasks
+Creo license",
     summary: [
-      "Absorbed scope increase without deadline slippage.",
-      "AI contribution rose to 30% of total effort.",
-      "Began evaluating need for additional headcount.",
+      "43 tasks completed",
+      "Invoiced 90.24% of total planned effort",
+      "Less reuse tasks were in the pipleline this month",
     ],
     risks: [
-      { risk: "Sustained scope increase", solution: "Evaluate 6th engineer for May", action: "Planned" },
+      { risk: "Reuse tasks", solution: "More will be added", action: "Reported to Tuomas and Marko" },
     ]
   }
 };
-
 window.REPORT_DATA["2026-05"] = {
   period: "MAY 2026",
   home: {
