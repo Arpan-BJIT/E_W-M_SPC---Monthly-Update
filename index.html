@@ -559,8 +559,60 @@ window.REPORT_DATA["2026-05"] = {
     ]
   }
 };
+
+window.REPORT_DATA["2026-06"] = {
+  period: "JUNE 2026",
+  home: {
+    currentIssues: [
+      { title: "Creo test", desc: "Creo license activated, need to test the performance", severity: "high", owner: "Arpan" },
+      { title: "Sharif got engaged", desc: "Sharif's training is ongoing", severity: "low", owner: "Sharif" },
+    ],
+    risks: [
+      { title: "Creo performance", desc: "Need to test how it works", severity: "high" },
+      { title: "Creo practice", desc: "Need to practice and get fluent with the interface", severity: "high" },
+    ],
+    upcoming: [
+      { title: "Sharif work", desc: "Sharif will work with the team by learning with LIVE work demo", date: "July 2026" },
+      { title: "RFC task", desc: "Arpan will test, learn, and start working with Creo with RFC task", date: "July 2026" },
+    ],
+    feedback: [
+      { name: "Marko Meriko", role: "Documentation Engineer", quote: "Waiting for feedback from Marko" }
+    ]
+  },
+  team: {
+    workingDays: 21,
+    engineers: [
+      { name: "Arpan", capacity: 168, actual: 140 },
+      { name: "Farhan", capacity: 168, actual: 139 },
+      { name: "Sharif", capacity: 168, actual: 136 },
+    ]
+  },
+  project: {
+    name: "Etteplan_Wartsila_Marine SPC",
+    plannedEffort: 468,
+    actualEffort: 227,
+    aiContribution: 6.9,
+    status: "on-schedule",
+    sectionReuseTask: 41,
+    sectionRevisionTask: 0,
+    sectionCreationTask: 0,
+    totalMeetingHours: 26.5,
+    tasks: [
+      { name: "Section Reuse", planned: null, actual: 227 },
+    ],
+    highlights: "Sharif got credentials and attended kick-off meeting\nCreo license confirmed",
+    blockers: "Wrong version of Creo installed\nEtteplan Citrix was not responding",
+    summary: [
+      "Invoice rate is comparatively low because Sharif was not billable for the whole month",
+    ],
+    risks: [
+      { risk: "Etteplan Citrix didn't respond for last 2 weeks", solution: "Need to contact IT", action: "Reported to Marko" },
+    ]
+  }
+};
 // ── MONTH CONFIG — add new months here (newest first) ──────────────────────
 const MONTHS = [
+  { key: "2026-06", label: "JUNE 2026" }
   { key: "2026-05", label: "May 2026" },
   { key: "2026-04", label: "April 2026" },
   { key: "2026-03", label: "March 2026" },
